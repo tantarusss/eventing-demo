@@ -12,9 +12,18 @@ public class MessagingService {
     ConnectionFactory connectionFactory;
     MessageListener listener;
     Destination tempQueue;
+    MyCompletionListener completionListener;
 
+    public void sendMessageAsync(String message) {
+        context.createProducer().setAsync(completionListener);
+    }
     public void sendMessage(String message) {
+        System.out.println("Send Message called");
         context.createProducer().send(tempQueue, message);
+    }
+    private void startListener() {
+        JMSConsumer consumer = context.createConsumer(tempQueue);
+        consumer.setMessageListener(listener);
     }
     public void receiveMessage() throws JMSException {
         JMSConsumer consumer = context.createConsumer(tempQueue);
@@ -23,8 +32,10 @@ public class MessagingService {
     }
     public MessagingService() {
         connectionFactory = new ActiveMQJMSConnectionFactory("tcp://localhost:61616", "artemis", "artemis");
-        listener = new Listener();
+        listener = new TextListener();
         context = connectionFactory.createContext();
         tempQueue = context.createTemporaryQueue();
+        completionListener = new MyCompletionListener();
+        startListener();
     }
 }

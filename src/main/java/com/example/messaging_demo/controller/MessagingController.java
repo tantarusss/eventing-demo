@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
 public class MessagingController {
     @Autowired
     MessagingService messagingService;
-    @PostMapping(value = "/send", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void sendMessage(@RequestBody String body) {
-        messagingService.sendMessage(body);
+    @PostMapping(value = "/send", consumes = MediaType.TEXT_PLAIN_VALUE)
+    public void sendMessageAsync(@RequestBody String body) {
+        messagingService.sendMessageAsync(body);
     }
 }
